@@ -1,26 +1,22 @@
-import { Link } from 'react-router-dom';
-import { type Product } from '../types'; // Use type-only import
+import { type Product } from '../types';
 import './ProductCard.css';
+import { Link } from 'react-router-dom'; // 1. Import the Link component
 
-interface ProductCardProps {
-  product: Product;
-}
-
-export default function ProductCard({ product }: ProductCardProps) {
-  // Use the first image as the main image, or a placeholder
-  const imageUrl = product.images[0] || 'https://via.placeholder.com/300';
+export default function ProductCard({ product }: { product: Product }) {
   
-  // Link to the product's detail page (which we'll build next)
-  const productLink = `/product/${product.id}`;
-
+  // 2. Wrap the entire card in a Link component.
+  // We link to the route we defined: /product/ followed by the product's unique ID.
   return (
-    <Link to={productLink} className="product-card">
-      <div className="product-card-image">
-        <img src={imageUrl} alt={product.name} loading="lazy" />
-      </div>
+    <Link to={`/product/${product.id}`} className="product-card">
+      <img 
+        src={product.images[0]} 
+        alt={product.name}
+        className="product-card-image" 
+      />
       <div className="product-card-info">
         <h3 className="product-card-name">{product.name}</h3>
-        <p className="product-card-price">₹{product.price.toLocaleString()}</p>
+        {/* We format the price for India (₹) */}
+        <p className="product-card-price">₹{product.price.toLocaleString('en-IN')}</p>
       </div>
     </Link>
   );

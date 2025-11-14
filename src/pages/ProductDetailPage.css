@@ -1,0 +1,131 @@
+/* == MOBILE-FIRST STYLES ==
+  These styles apply to all screen sizes by default.
+  They are designed to look good on a small phone.
+*/
+.product-detail-page {
+  /* We use flex-direction: column to stack the image and info vertically */
+  display: flex;
+  flex-direction: column;
+  padding: 16px; /* Small padding for mobile */
+  gap: 20px;
+}
+
+.page-status {
+  padding: 20px;
+  text-align: center;
+  font-size: 1.2rem;
+}
+.page-status.error {
+  color: red;
+}
+
+.product-gallery {
+  width: 100%;
+}
+
+.product-detail-image {
+  width: 100%;
+  aspect-ratio: 1 / 1; /* Make it a perfect square */
+  object-fit: cover;
+  border-radius: 8px; /* Rounded corners */
+  background-color: #f0f0f0; /* Placeholder color */
+}
+
+.product-detail-info {
+  display: flex;
+  flex-direction: column;
+}
+
+.product-detail-name {
+  font-size: 1.8rem; /* Large, readable font for a phone */
+  font-weight: 700;
+  margin: 0;
+  line-height: 1.2;
+}
+
+.product-detail-price {
+  font-size: 1.5rem;
+  font-weight: 300;
+  color: #2c2c2c;
+  margin: 10px 0;
+}
+
+.product-detail-description {
+  font-size: 1rem;
+  color: #555;
+  line-height: 1.6;
+}
+
+.product-detail-specs {
+  margin-top: 20px;
+  border-top: 1px solid #eee;
+  padding-top: 10px;
+}
+
+.product-detail-specs h3 {
+  margin-bottom: 10px;
+}
+
+.product-detail-specs ul {
+  list-style: none;
+  padding: 0;
+}
+
+.product-detail-specs li {
+  font-size: 0.9rem;
+  color: #333;
+  padding: 6px 0;
+}
+
+.product-detail-specs li strong {
+  text-transform: capitalize;
+  margin-right: 8px;
+}
+
+.whatsapp-button {
+  background-color: #25D366; /* Official WhatsApp Green */
+  color: white;
+  font-size: 1.1rem;
+  font-weight: 600;
+  border: none;
+  border-radius: 8px;
+  padding: 16px 25px; /* Large, easy-to-tap button */
+  margin-top: 30px;
+  cursor: pointer;
+  transition: background-color 0.2s;
+  width: 100%;
+  text-align: center;
+  text-decoration: none;
+}
+
+.whatsapp-button:hover {
+  background-color: #1EAE50;
+}
+
+/* == TABLET & DESKTOP STYLES ==
+  This @media query applies ONLY if the screen width
+  is 768px or wider.
+*/
+@media (min-width: 768px) {
+  .product-detail-page {
+    /* Change to a 2-column grid layout */
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 40px;
+    
+    /* Center it on the page */
+    max-width: 1100px;
+    margin: 40px auto;
+    padding: 40px;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+  }
+
+  .product-detail-name {
+    font-size: 2.5rem; /* Make text bigger on desktop */
+  }
+  
+  .product-detail-price {
+    font-size: 2rem;
+  }
+}
