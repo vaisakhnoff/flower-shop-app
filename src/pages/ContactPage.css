@@ -1,0 +1,74 @@
+/* src/pages/ContactPage.css */
+
+.contact-page {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  padding: 24px;
+  max-width: 600px;
+  margin: 20px auto;
+}
+
+.contact-page h2 {
+  font-size: 2rem;
+  margin-bottom: 12px;
+}
+
+.contact-page p {
+  font-size: 1.1rem;
+  color: #555;
+  margin-bottom: 24px;
+}
+
+.contact-card {
+  width: 100%;
+  background-color: #ffffff;
+  border-radius: 8px;
+  padding: 24px;
+  text-align: left;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+  margin-bottom: 24px;
+}
+
+.contact-card h3 {
+  font-size: 1.5rem;
+  margin-top: 0;
+  margin-bottom: 16px;
+  color: #333;
+}
+
+.contact-info-item {
+  font-size: 1rem;
+  color: #333;
+  margin-bottom: 12px;
+  line-height: 1.5;
+}
+
+.contact-info-item strong {
+  margin-right: 8px;
+  color: #000;
+}
+
+/* We can reuse the whatsapp-button style we already
+   defined in ProductDetailPage.css, but we will
+   add it here as well for separation.
+*/
+.contact-page .whatsapp-button {
+  background-color: #25D366;
+  color: white;
+  font-size: 1.1rem;
+  font-weight: 600;
+  border: none;
+  border-radius: 8px;
+  padding: 16px 25px;
+  cursor: pointer;
+  width: 100%;
+  text-align: center;
+  transition: background-color 0.2s;
+  text-decoration: none;
+}
+
+.contact-page .whatsapp-button:hover {
+  background-color: #1EAE50;
+}
