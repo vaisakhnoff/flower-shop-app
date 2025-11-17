@@ -1,7 +1,21 @@
-// We no longer need to import 'Header.css'
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
+import { useAuth } from '../context/AuthContext';
+import { signOut } from 'firebase/auth';
+import { auth } from '../firebase';
 
 export default function Header() {
+  const { user } = useAuth();
+  const navigate = useNavigate();
+
+  const handleLogout = async () => {
+    try {
+      await signOut(auth);
+      navigate('/');
+    } catch (err) {
+      console.error("Error signing out:", err);
+    }
+  };
+
   return (
     <header className="
       sticky top-0 z-50 w-full            
@@ -10,21 +24,11 @@ export default function Header() {
       backdrop-blur-sm                  
       border-b border-gray-200
     ">
-      {/* sticky top-0 z-50: Makes the header stick to the top
-        bg-white/95: White background with 95% opacity
-        shadow-sm: A light, modern shadow
-        backdrop-blur-sm: Blurs content scrolling underneath (for iOS)
-        border-b: A subtle bottom border
-      */}
       <div className="
         flex items-center justify-between  
         max-w-6xl mx-auto                   
         p-4                               
       ">
-        {/* flex items-center justify-between: The classic layout
-          max-w-6xl mx-auto: A wide, centered container
-          p-4: Padding
-        */}
         <Link 
           to="/" 
           className="text-xl font-bold text-gray-800 hover:text-teal-600 transition-colors"
@@ -33,8 +37,6 @@ export default function Header() {
         </Link>
         
         <nav className="flex items-center gap-4 sm:gap-6">
-          {/* gap-4 sm:gap-6: Puts 4px of space between links on mobile, 6px on small screens+
-          */}
           <Link 
             to="/" 
             className="text-sm font-medium text-gray-600 hover:text-teal-600 transition-colors"
@@ -58,7 +60,22 @@ export default function Header() {
             className="text-sm font-medium text-gray-600 hover:text-teal-600 transition-colors"
           >
             Contact
-          </Link>
+          </Link> 
+          
+          {/* THIS IS THE FIX:
+            We only check if the user is logged in.
+            If they are, we show a "Logout" button.
+            If they are not, we show nothing.
+            This is clean and professional.
+          */}
+          {user && (
+            <button 
+              onClick={handleLogout}
+              className="text-sm font-medium text-red-600 hover:text-red-800 transition-colors"
+            >
+              Logout
+            </button>
+          )}
         </nav>
       </div>
     </header>
