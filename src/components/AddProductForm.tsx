@@ -10,27 +10,40 @@ export default function AddProductForm({ onSuccess }: { onSuccess: () => void })
   const [price, setPrice] = useState('');
   const [description, setDescription] = useState('');
   const [categorySlug, setCategorySlug] = useState('');
-  const [imageUrl, setImageUrl] = useState('');
+  
+  // CHANGED: Now storing an ARRAY of strings for multiple images
+  const [images, setImages] = useState<string[]>([]); 
+  
   const [isSubmitting, setIsSubmitting] = useState(false);
+
+  // Helper to add a new image to the list
+  const handleImageUpload = (url: string) => {
+    setImages(prev => [...prev, url]);
+  };
+
+  // Helper to remove an image by index
+  const removeImage = (indexToRemove: number) => {
+    setImages(prev => prev.filter((_, index) => index !== indexToRemove));
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
-    if (!imageUrl) {
-      alert('Please upload an image first.');
+    if (images.length === 0) {
+      alert('Please upload at least one image.');
       return;
     }
     
     setIsSubmitting(true);
 
     try {
-      // 1. Add product to Firestore
+      // 1. Add the new product to the 'products' collection
       await addDoc(collection(db, 'products'), {
         name,
         price: Number(price),
         description,
         categorySlug,
-        images: [imageUrl], // Store as an array
+        images: images, // We save the whole array
         // We initialize with an empty object, no hardcoded "Local Farm" data
         specifications: {}, 
         createdAt: new Date()
@@ -54,7 +67,7 @@ export default function AddProductForm({ onSuccess }: { onSuccess: () => void })
       setPrice('');
       setDescription('');
       setCategorySlug('');
-      setImageUrl('');
+      setImages([]); // Clear the array
       
       // Notify the parent page that we are done
       onSuccess();
@@ -73,31 +86,44 @@ export default function AddProductForm({ onSuccess }: { onSuccess: () => void })
 
       {/* Image Upload Section */}
       <div>
-        <label className="block text-sm font-medium text-gray-700 mb-1">Product Image</label>
+        <label className="block text-sm font-medium text-gray-700 mb-2">Product Images</label>
         
-        {/* LOGIC: If we have an image URL, show the image and a remove button.
-                   If NOT, show the upload component. */}
-        {imageUrl ? (
-          <div className="relative w-full h-48 bg-gray-100 rounded-lg overflow-hidden group">
-            <img 
-              src={imageUrl} 
-              alt="Preview" 
-              className="w-full h-full object-contain"
-            />
-            {/* Overlay with Remove Button */}
-            <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
-              <button
-                type="button"
-                onClick={() => setImageUrl('')}
-                className="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-lg font-medium shadow-sm transition-colors"
-              >
-                Remove Image
-              </button>
-            </div>
+        {/* 1. The Upload Component (Always visible now) */}
+        <div className="mb-4">
+          <ImageUpload onUpload={handleImageUpload} />
+        </div>
+
+        {/* 2. The Gallery of Uploaded Images */}
+        {images.length > 0 && (
+          <div className="grid grid-cols-3 gap-4 mt-4">
+            {images.map((url, index) => (
+              <div key={index} className="relative group aspect-square bg-gray-100 rounded-lg overflow-hidden border border-gray-200">
+                <img 
+                  src={url} 
+                  alt={`Product ${index + 1}`} 
+                  className="w-full h-full object-cover"
+                />
+                {/* Remove Button (appears on hover) */}
+                <button
+                  type="button"
+                  onClick={() => removeImage(index)}
+                  className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center text-white font-medium"
+                >
+                  Remove
+                </button>
+                {/* 'Cover' badge for the first image */}
+                {index === 0 && (
+                  <span className="absolute top-1 left-1 bg-teal-600 text-white text-xs px-2 py-0.5 rounded-full shadow-sm">
+                    Cover
+                  </span>
+                )}
+              </div>
+            ))}
           </div>
-        ) : (
-          <ImageUpload onUpload={setImageUrl} />
         )}
+        <p className="text-xs text-gray-500 mt-2">
+          Upload as many images as you like. The first image will be the main cover.
+        </p>
       </div>
 
       {/* Product Name */}
