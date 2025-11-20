@@ -1,21 +1,6 @@
-import { Link, useNavigate } from 'react-router-dom';
-import { useAuth } from '../context/AuthContext';
-import { signOut } from 'firebase/auth';
-import { auth } from '../firebase';
+import { Link } from 'react-router-dom';
 
 export default function Header() {
-  const { user } = useAuth();
-  const navigate = useNavigate();
-
-  const handleLogout = async () => {
-    try {
-      await signOut(auth);
-      navigate('/');
-    } catch (err) {
-      console.error("Error signing out:", err);
-    }
-  };
-
   return (
     <header className="
       sticky top-0 z-50 w-full            
@@ -61,21 +46,6 @@ export default function Header() {
           >
             Contact
           </Link> 
-          
-          {/* THIS IS THE FIX:
-            We only check if the user is logged in.
-            If they are, we show a "Logout" button.
-            If they are not, we show nothing.
-            This is clean and professional.
-          */}
-          {user && (
-            <button 
-              onClick={handleLogout}
-              className="text-sm font-medium text-red-600 hover:text-red-800 transition-colors"
-            >
-              Logout
-            </button>
-          )}
         </nav>
       </div>
     </header>
