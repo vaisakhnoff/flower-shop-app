@@ -1,50 +1,108 @@
 import { useState, useEffect } from 'react';
 import { db } from '../firebase';
-import { collection, getDocs, query, where, QuerySnapshot, type DocumentData } from 'firebase/firestore';
-import { type Product } from '../types'; // Use type-only import
+import { 
+  collection, 
+  getDocs, 
+  query, 
+  where, 
+  limit, 
+  startAfter, 
+  type QueryDocumentSnapshot, // Fix: Use type import
+  type DocumentData           // Fix: Use type import
+} from 'firebase/firestore';
+import { type Product } from '../types';
+
+const PRODUCTS_PER_PAGE = 8; 
 
 export function useProducts(categorySlug: string | undefined) {
   const [products, setProducts] = useState<Product[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  
+  const [lastDoc, setLastDoc] = useState<QueryDocumentSnapshot<DocumentData> | null>(null);
+  const [hasMore, setHasMore] = useState(true);
 
   useEffect(() => {
-    const fetchProducts = async () => {
-      setIsLoading(true);
-      setError(null);
-      
+    setProducts([]);
+    setLastDoc(null);
+    setHasMore(true);
+    setIsLoading(true);
+    
+    // Move logic inside useEffect to satisfy linter
+    const fetchInitial = async () => {
       try {
-        // Start with the base collection
         const productsCollection = collection(db, 'products');
+        
+        // Fix: Use 'const' instead of 'let'
+        const constraints = [];
 
-        // Create our query
-        // If a categorySlug is provided, filter by it.
-        // Otherwise, fetch all products.
-        const productQuery = categorySlug 
-          ? query(productsCollection, where('categorySlug', '==', categorySlug))
-          : query(productsCollection);
+        if (categorySlug) {
+          constraints.push(where('categorySlug', '==', categorySlug));
+        }
+        
+        constraints.push(limit(PRODUCTS_PER_PAGE));
 
-        const querySnapshot: QuerySnapshot<DocumentData> = await getDocs(productQuery);
-
-        const productsData: Product[] = querySnapshot.docs.map(doc => ({
+        const productQuery = query(productsCollection, ...constraints);
+        const querySnapshot = await getDocs(productQuery);
+        
+        const newProducts = querySnapshot.docs.map(doc => ({
           id: doc.id,
           ...doc.data(),
-        } as Product)); // Assert the type
+        } as Product));
 
-        setProducts(productsData);
+        const lastVisible = querySnapshot.docs[querySnapshot.docs.length - 1];
+        setLastDoc(lastVisible || null);
+        
+        setHasMore(querySnapshot.docs.length >= PRODUCTS_PER_PAGE);
+        setProducts(newProducts);
+
       } catch (err) {
-        if (err instanceof Error) {
-          setError(err.message);
-        } else {
-          setError('An unknown error occurred');
-        }
+        console.error(err);
+        setError(err instanceof Error ? err.message : 'An unknown error occurred');
       } finally {
         setIsLoading(false);
       }
     };
 
-    fetchProducts();
-  }, [categorySlug]); 
+    fetchInitial();
+  }, [categorySlug]);
 
-  return { products, isLoading, error };
+  const loadMore = async () => {
+    if (!lastDoc || isLoading) return;
+    
+    setIsLoading(true);
+    try {
+      const productsCollection = collection(db, 'products');
+      const constraints = [];
+
+      if (categorySlug) {
+        constraints.push(where('categorySlug', '==', categorySlug));
+      }
+
+      constraints.push(startAfter(lastDoc));
+      constraints.push(limit(PRODUCTS_PER_PAGE));
+
+      const productQuery = query(productsCollection, ...constraints);
+      const querySnapshot = await getDocs(productQuery);
+      
+      const newProducts = querySnapshot.docs.map(doc => ({
+        id: doc.id,
+        ...doc.data(),
+      } as Product));
+
+      const lastVisible = querySnapshot.docs[querySnapshot.docs.length - 1];
+      setLastDoc(lastVisible || null);
+      
+      setHasMore(querySnapshot.docs.length >= PRODUCTS_PER_PAGE);
+      setProducts(prev => [...prev, ...newProducts]);
+
+    } catch (err) {
+      console.error(err);
+      setError(err instanceof Error ? err.message : 'An unknown error occurred');
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  return { products, isLoading, error, hasMore, loadMore };
 }

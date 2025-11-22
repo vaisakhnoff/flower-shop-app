@@ -11,8 +11,7 @@ export interface Product {
   name: string;
   price: number;
   description: string;
-  categorySlug: string; // Fixed typo: 'cateregorySlug' -> 'categorySlug'
+  categorySlug: string;
   images: string[];
-  specifications: Record<string, string>; // This is correct for a Firestore map
+  specifications: Record<string, string>;
 }
-
