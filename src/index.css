@@ -1,4 +1,21 @@
-/* src/index.css */
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+/* === GLOBAL FIXES === */
+
+/* This prevents the "white space" on the right side.
+  It tells the browser to hide anything that overflows horizontally.
+*/
+html, body {
+  overflow-x: hidden;
+  width: 100%;
+  position: relative;
+  margin: 0;
+  padding: 0;
+}
+
+/* Optional: Smooth scrolling for the whole page */
+html {
+  scroll-behavior: smooth;
+}
