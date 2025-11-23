@@ -5,22 +5,24 @@ import { useCategories } from '../hooks/useCategories';
 import ImageUpload from './ImageUpload';
 import { type Product } from '../types';
 
-// Add 'initialProduct' to props
 interface AddProductFormProps {
   onSuccess: () => void;
-  initialProduct?: Product | null; // Optional: only for editing
+  initialProduct?: Product | null;
 }
 
 export default function AddProductForm({ onSuccess, initialProduct }: AddProductFormProps) {
   const { categories } = useCategories();
   
-  // Initialize state. If editing, use the product's data. If creating, use empty strings.
-  const [name, setName] = useState(initialProduct?.name || '');
+  // Standard Fields
   const [price, setPrice] = useState(initialProduct?.price.toString() || '');
   const [description, setDescription] = useState(initialProduct?.description || '');
   const [categorySlug, setCategorySlug] = useState(initialProduct?.categorySlug || '');
   const [images, setImages] = useState<string[]>(initialProduct?.images || []); 
-  // We can also load specs if they exist, or default to empty array
+  
+  // Multi-language Names
+  const [nameEn, setNameEn] = useState(initialProduct?.name_en || initialProduct?.name || '');
+  const [nameMl, setNameMl] = useState(initialProduct?.name_ml || '');
+
   const [specs, setSpecs] = useState<{ key: string; value: string }[]>(
     initialProduct?.specifications 
       ? Object.entries(initialProduct.specifications).map(([key, value]) => ({ key, value }))
@@ -29,22 +31,24 @@ export default function AddProductForm({ onSuccess, initialProduct }: AddProduct
 
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  // Reset form if initialProduct changes (e.g. clicking "Edit" on a different item)
   useEffect(() => {
     if (initialProduct) {
-      setName(initialProduct.name);
       setPrice(initialProduct.price.toString());
       setDescription(initialProduct.description);
       setCategorySlug(initialProduct.categorySlug);
       setImages(initialProduct.images);
+      
+      setNameEn(initialProduct.name_en || initialProduct.name || '');
+      setNameMl(initialProduct.name_ml || '');
+
       setSpecs(Object.entries(initialProduct.specifications).map(([key, value]) => ({ key, value })));
     } else {
-      // Clear form for "Add New" mode
-      setName('');
       setPrice('');
       setDescription('');
       setCategorySlug('');
       setImages([]);
+      setNameEn('');
+      setNameMl('');
       setSpecs([]);
     }
   }, [initialProduct]);
@@ -57,7 +61,6 @@ export default function AddProductForm({ onSuccess, initialProduct }: AddProduct
     setImages(prev => prev.filter((_, index) => index !== indexToRemove));
   };
 
-  // Spec helpers
   const addSpec = () => setSpecs([...specs, { key: '', value: '' }]);
   const removeSpec = (index: number) => setSpecs(specs.filter((_, i) => i !== index));
   const updateSpec = (index: number, field: 'key' | 'value', newValue: string) => {
@@ -77,7 +80,6 @@ export default function AddProductForm({ onSuccess, initialProduct }: AddProduct
     setIsSubmitting(true);
 
     try {
-      // Convert specs array back to object
       const specificationsObject = specs.reduce((acc, item) => {
         if (item.key.trim() && item.value.trim()) {
           acc[item.key.trim()] = item.value.trim();
@@ -86,35 +88,30 @@ export default function AddProductForm({ onSuccess, initialProduct }: AddProduct
       }, {} as Record<string, string>);
 
       const productData = {
-        name,
+        name: nameEn, 
+        name_en: nameEn,
+        name_ml: nameMl,
         price: Number(price),
         description,
         categorySlug,
         images,
         specifications: specificationsObject,
-        updatedAt: new Date() // Good practice to track updates
+        updatedAt: new Date()
       };
 
       if (initialProduct) {
         // === EDIT MODE ===
-        // 1. Update the existing document
         const productRef = doc(db, 'products', initialProduct.id);
         await updateDoc(productRef, productData);
-
-        // Note: If you changed the category, we *should* update counts on both
-        // old and new categories. That is complex logic we can skip for now 
-        // or add if you need it later. For now, we assume category stays same.
-        
         alert('Product updated successfully!');
       } else {
         // === CREATE MODE ===
-        // 1. Create new document
         await addDoc(collection(db, 'products'), {
           ...productData,
           createdAt: new Date()
         });
 
-        // 2. Increment category count
+        // Increment category count
         const selectedCategory = categories.find(c => c.slug === categorySlug);
         if (selectedCategory) {
            const categoryRef = doc(db, 'categories', selectedCategory.id);
@@ -123,7 +120,6 @@ export default function AddProductForm({ onSuccess, initialProduct }: AddProduct
         alert('Product added successfully!');
       }
       
-      // Reset & Close
       onSuccess();
 
     } catch (error) {
@@ -158,25 +154,35 @@ export default function AddProductForm({ onSuccess, initialProduct }: AddProduct
                 >
                   Remove
                 </button>
-                {index === 0 && (
-                  <span className="absolute top-1 left-1 bg-teal-600 text-white text-xs px-2 py-0.5 rounded-full shadow-sm">Cover</span>
-                )}
               </div>
             ))}
           </div>
         )}
       </div>
 
-      {/* Name */}
-      <div>
-        <label className="block text-sm font-medium text-gray-700 mb-1">Name</label>
-        <input
-          type="text"
-          value={name}
-          onChange={(e) => setName(e.target.value)}
-          required
-          className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500"
-        />
+      {/* Multi-language Names */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div>
+          <label className="block text-sm font-medium text-gray-700 mb-1">Name (English)</label>
+          <input
+            type="text"
+            value={nameEn}
+            onChange={(e) => setNameEn(e.target.value)}
+            required
+            placeholder="Red Rose"
+            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500"
+          />
+        </div>
+        <div>
+          <label className="block text-sm font-medium text-gray-700 mb-1">Name (Malayalam)</label>
+          <input
+            type="text"
+            value={nameMl}
+            onChange={(e) => setNameMl(e.target.value)}
+            placeholder="റോസ്"
+            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500"
+          />
+        </div>
       </div>
 
       {/* Price & Category */}
@@ -201,7 +207,9 @@ export default function AddProductForm({ onSuccess, initialProduct }: AddProduct
           >
             <option value="">Select...</option>
             {categories.map((cat) => (
-              <option key={cat.id} value={cat.slug}>{cat.name}</option>
+              <option key={cat.id} value={cat.slug}>
+                {cat.name} {cat.name_ml ? `(${cat.name_ml})` : ''}
+              </option>
             ))}
           </select>
         </div>

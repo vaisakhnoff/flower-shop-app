@@ -4,26 +4,29 @@ import { db } from '../firebase';
 import ImageUpload from './ImageUpload';
 import { type Category } from '../types';
 
-// Define the props interface including initialCategory
 interface AddCategoryFormProps {
   onSuccess: () => void;
   initialCategory?: Category | null; 
 }
 
 export default function AddCategoryForm({ onSuccess, initialCategory }: AddCategoryFormProps) {
-  const [name, setName] = useState('');
+  // Multi-language names
+  const [nameEn, setNameEn] = useState('');
+  const [nameMl, setNameMl] = useState('');
+  
   const [slug, setSlug] = useState('');
   const [imageUrl, setImageUrl] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  // Load data if editing
   useEffect(() => {
     if (initialCategory) {
-      setName(initialCategory.name);
+      setNameEn(initialCategory.name_en || initialCategory.name || '');
+      setNameMl(initialCategory.name_ml || '');
       setSlug(initialCategory.slug);
       setImageUrl(initialCategory.imageUrl || '');
     } else {
-      setName('');
+      setNameEn('');
+      setNameMl('');
       setSlug('');
       setImageUrl('');
     }
@@ -31,7 +34,7 @@ export default function AddCategoryForm({ onSuccess, initialCategory }: AddCateg
 
   const handleNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const val = e.target.value;
-    setName(val);
+    setNameEn(val);
     if (!initialCategory) {
       setSlug(val.toLowerCase().replace(/\s+/g, '-').replace(/[^\w-]+/g, ''));
     }
@@ -48,29 +51,32 @@ export default function AddCategoryForm({ onSuccess, initialCategory }: AddCateg
     setIsSubmitting(true);
 
     try {
+      const categoryData = {
+        name: nameEn, // Fallback
+        name_en: nameEn,
+        name_ml: nameMl,
+        slug,
+        imageUrl,
+        updatedAt: new Date()
+      };
+
       if (initialCategory) {
-        // Edit Mode
+        // === EDIT MODE ===
         const categoryRef = doc(db, 'categories', initialCategory.id);
-        await updateDoc(categoryRef, {
-          name,
-          slug,
-          imageUrl,
-          updatedAt: new Date()
-        });
+        await updateDoc(categoryRef, categoryData);
         alert('Category updated successfully!');
       } else {
-        // Create Mode
+        // === CREATE MODE ===
         await addDoc(collection(db, 'categories'), {
-          name,
-          slug,
-          imageUrl,
+          ...categoryData,
           itemCount: 0,
           createdAt: new Date()
         });
         alert('Category added successfully!');
       }
 
-      setName('');
+      setNameEn('');
+      setNameMl('');
       setSlug('');
       setImageUrl('');
       onSuccess();
@@ -89,6 +95,7 @@ export default function AddCategoryForm({ onSuccess, initialCategory }: AddCateg
         {initialCategory ? 'Edit Category' : 'Add New Category'}
       </h2>
 
+      {/* Image Upload */}
       <div>
         <label className="block text-sm font-medium text-gray-700 mb-1">Category Image</label>
         {imageUrl ? (
@@ -103,17 +110,36 @@ export default function AddCategoryForm({ onSuccess, initialCategory }: AddCateg
         )}
       </div>
 
-      <div>
-        <label className="block text-sm font-medium text-gray-700 mb-1">Category Name</label>
-        <input type="text" value={name} onChange={handleNameChange} placeholder="e.g. Wedding Bouquets" required className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500" />
+      {/* Multi-language Names */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div>
+          <label className="block text-sm font-medium text-gray-700 mb-1">Name (English)</label>
+          <input type="text" value={nameEn} onChange={handleNameChange} placeholder="e.g. Wedding" required className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500" />
+        </div>
+        <div>
+          <label className="block text-sm font-medium text-gray-700 mb-1">Name (Malayalam)</label>
+          <input type="text" value={nameMl} onChange={(e) => setNameMl(e.target.value)} placeholder="e.g. വിവാഹം" className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500" />
+        </div>
       </div>
 
+      {/* Slug */}
       <div>
         <label className="block text-sm font-medium text-gray-700 mb-1">Slug (URL Identifier)</label>
         <input type="text" value={slug} onChange={(e) => setSlug(e.target.value)} required className="w-full px-3 py-2 border border-gray-300 bg-gray-50 rounded-lg text-gray-600 focus:outline-none" />
+        {initialCategory && (
+          <p className="text-xs text-orange-500 mt-1">
+            Warning: Changing this might break links to existing products.
+          </p>
+        )}
       </div>
 
-      <button type="submit" disabled={isSubmitting} className="w-full bg-teal-600 text-white font-bold py-3 px-6 rounded-lg transition duration-200 hover:bg-teal-700 disabled:opacity-50">
+      <button
+        type="submit"
+        disabled={isSubmitting}
+        className={`w-full bg-teal-600 text-white font-bold py-3 px-6 rounded-lg transition duration-200 ${
+          isSubmitting ? 'opacity-50 cursor-not-allowed' : 'hover:bg-teal-700'
+        }`}
+      >
         {isSubmitting ? 'Saving...' : (initialCategory ? 'Update Category' : 'Add Category')}
       </button>
     </form>
