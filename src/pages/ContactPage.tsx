@@ -2,9 +2,9 @@ import { useLanguage } from '../context/LanguageContext';
 
 const WHATSAPP_NUMBER = import.meta.env.VITE_WHATSAPP_NUMBER;
 
-const BUSINESS_NAME = "My Father's Flower Shop";
-const BUSINESS_EMAIL = "info@myflowershop.com";
-const BUSINESS_PHONE = "+91 12 3456 7890";
+const BUSINESS_NAME = "Shanmughan , Anjali Flowers";
+const BUSINESS_EMAIL = "anjaliflowerworks@gmail.com";
+const BUSINESS_PHONE = "+91 9388121197";
 const BUSINESS_ADDRESS = "123 Flower Street, Your City, Kerala";
 
 export default function ContactPage() {
@@ -17,7 +17,7 @@ export default function ContactPage() {
       return;
     }
 
-    const message = `Hi, I have a general question about your services.`;
+    const message = `Hi, നിങ്ങളുടെ സേവനങ്ങളിൽ എന്തെല്ലാം ഉൾപ്പെടുന്നു ?.`;
     const encodedMessage = encodeURIComponent(message);
     const whatsappUrl = `https://wa.me/${WHATSAPP_NUMBER}?text=${encodedMessage}`;
     
@@ -44,20 +44,7 @@ export default function ContactPage() {
           </h2>
           
           <div className="space-y-5">
-            {/* Address */}
-            <div className="flex items-start gap-4">
-              <div className="flex-shrink-0 w-10 h-10 bg-stone-100 rounded-full flex items-center justify-center text-xl">
-                📍
-              </div>
-              <div className="flex-1">
-                <p className="text-sm font-semibold text-gray-900 mb-1">
-                  {t.address}
-                </p>
-                <p className="text-sm md:text-base text-gray-600 leading-relaxed">
-                  {BUSINESS_ADDRESS}
-                </p>
-              </div>
-            </div>
+            
 
             {/* Phone */}
             <div className="flex items-start gap-4">
