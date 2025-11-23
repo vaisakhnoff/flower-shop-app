@@ -52,7 +52,7 @@ export default function Header() {
           onClick={closeMobileMenu}
           className="text-xl sm:text-2xl md:text-2xl font-serif font-bold text-amber-600 hover:text-amber-700 transition-colors duration-300 z-50 relative"
         >
-          Father's Flower Shop
+          Anjali Flowers
         </Link>
         
         {/* Desktop Navigation */}
