@@ -5,7 +5,6 @@ const WHATSAPP_NUMBER = import.meta.env.VITE_WHATSAPP_NUMBER;
 const BUSINESS_NAME = "Shanmughan , Anjali Flowers";
 const BUSINESS_EMAIL = "anjaliflowerworks@gmail.com";
 const BUSINESS_PHONE = "+91 9388121197";
-const BUSINESS_ADDRESS = "123 Flower Street, Your City, Kerala";
 
 export default function ContactPage() {
   const { t } = useLanguage();
