@@ -27,7 +27,11 @@ export const translations = {
     sendInquiry: "Send a General Inquiry on WhatsApp",
     // Shop Page
     categoryPrefix: "Category: ",
-    yourFavorites: "Your Favorites"
+    yourFavorites: "Your Favorites",
+    // Hero Section
+    shopName: "Father's Flower Shop",
+    heroTitle: "Fresh Flowers for Every Occasion",
+    heroSubtitle: "Handpicked blooms delivered with care, bringing beauty and joy to your special moments"
   },
   ml: {
     home: "ഹോം",
@@ -57,7 +61,11 @@ export const translations = {
     sendInquiry: "വാട്‌സാപ്പിൽ അന്വേഷിക്കുക",
     // Shop Page
     categoryPrefix: "വിഭാഗം: ",
-    yourFavorites: "നിങ്ങളുടെ പ്രിയപ്പെട്ടവ"
+    yourFavorites: "നിങ്ങളുടെ പ്രിയപ്പെട്ടവ",
+    // Hero Section
+    shopName: "പിതാവിന്റെ ഫ്ലവർ ശോപ്പ്",
+    heroTitle: "എല്ലാ അവസരങ്ങളിലേക്കും ഹരിതമായ പൂക്കൾ",
+    heroSubtitle: "ശ്രദ്ധയോടെ തിരഞ്ഞെടുത്ത പൂക്കൾ നിങ്ങളുടെ സന്തോഷ നിമിഷങ്ങളിൽ സൗന്ദര്യവും സന്തോഷവും എത്തിക്കുന്നു."
   }
 };
 
