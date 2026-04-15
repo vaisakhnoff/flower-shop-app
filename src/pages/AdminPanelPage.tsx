@@ -164,7 +164,6 @@ export default function AdminPanelPage() {
                         <tr>
                           <th className="p-4">Image</th>
                           <th className="p-4">Name</th>
-                          <th className="p-4">Price</th>
                           <th className="p-4">Category</th>
                           <th className="p-4 text-right">Actions</th>
                         </tr>
@@ -188,7 +187,6 @@ export default function AdminPanelPage() {
                                 <span className="ml-2 text-xs bg-blue-100 text-blue-800 px-2 py-0.5 rounded">ML</span>
                               )}
                             </td>
-                            <td className="p-4">₹{product.price.toLocaleString('en-IN')}</td>
                             <td className="p-4 text-gray-500">{product.categorySlug}</td>
                             <td className="p-4 text-right space-x-2">
                               <button 

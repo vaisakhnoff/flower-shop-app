@@ -279,7 +279,6 @@ export default function ImageGallery({ images, alt }: ImageGalleryProps) {
           <img
             src={images[active]}
             alt={`${alt} ${active + 1}`}
-            onClick={e => e.stopPropagation()}
             style={{
               maxWidth: '90vw',
               maxHeight: '88vh',

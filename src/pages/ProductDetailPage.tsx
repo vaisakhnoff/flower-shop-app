@@ -146,7 +146,7 @@ export default function ProductDetailPage() {
     const optionLines = Object.entries(selectedOptions)
       .map(([k, v]) => `• ${k.charAt(0).toUpperCase() + k.slice(1)}: *${v}*`)
       .join('\n');
-    return `Hi! I'm interested in placing an order for:\n\n*${displayName}*\nPrice: ₹${product.price.toLocaleString('en-IN')}\n${optionLines ? '\nCustomization:\n' + optionLines : ''}\n\nProduct link: ${url}\n\nCould you please share more details?`;
+    return `Hi! I'm interested in placing an order for:\n\n*${displayName}*\n${optionLines ? '\nCustomization:\n' + optionLines : ''}\n\nProduct link: ${url}\n\nCould you please share more details?`;
   };
 
   const handleWhatsApp = () => {
@@ -241,24 +241,8 @@ export default function ProductDetailPage() {
               {displayName}
             </h1>
 
-            {/* ── Price + actions row ── */}
-            <div className="flex items-center justify-between gap-4 mb-5">
-              <div>
-                <p
-                  className="font-bold leading-none"
-                  style={{
-                    color: '#c9922c',
-                    fontSize: 'clamp(1.6rem, 4vw, 2.2rem)',
-                    fontFamily: "'DM Sans', sans-serif",
-                    letterSpacing: '-0.03em',
-                  }}
-                >
-                  ₹{product.price.toLocaleString('en-IN')}
-                </p>
-                <p className="text-[11px] mt-1 font-medium" style={{ color: '#b0997a' }}>
-                  Inclusive of all taxes
-                </p>
-              </div>
+            {/* ── Actions row ── */}
+            <div className="flex items-center justify-end gap-4 mb-5">
 
               <div className="flex items-center gap-2 flex-shrink-0">
                 {/* Favorite */}
@@ -528,17 +512,6 @@ export default function ProductDetailPage() {
         }}
       >
         <div className="flex items-center gap-3 px-4 py-3">
-          {/* Price pill */}
-          <div className="flex-shrink-0">
-            <p className="text-[10px] font-medium" style={{ color: '#b0997a' }}>Price</p>
-            <p className="font-bold text-base leading-tight" style={{ color: '#c9922c', fontFamily: "'DM Sans', sans-serif" }}>
-              ₹{product.price.toLocaleString('en-IN')}
-            </p>
-          </div>
-
-          {/* Divider */}
-          <div className="w-px h-8 flex-shrink-0" style={{ background: 'rgba(243,232,224,0.9)' }} />
-
           {/* WhatsApp CTA */}
           <button
             onClick={handleWhatsApp}

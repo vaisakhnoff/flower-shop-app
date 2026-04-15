@@ -71,32 +71,21 @@ export default function ProductCard({ product }: { product: Product }) {
 
       {/* Content */}
       <div className="p-3.5 sm:p-4">
-        {/* Name */}
-        <h3
-          className="font-medium text-[0.875rem] sm:text-[0.9375rem] leading-snug mb-2 line-clamp-2 transition-colors duration-200 group-hover:text-[#c9922c]"
-          style={{
-            color: '#2c1810',
-            fontFamily: "'DM Sans', sans-serif",
-          }}
-        >
-          {displayName}
-        </h3>
-
-        {/* Price row */}
-        <div className="flex items-center justify-between">
-          <p
-            className="font-bold text-base sm:text-lg"
+        <div className="flex items-center justify-between gap-2">
+          {/* Name */}
+          <h3
+            className="font-medium text-[0.875rem] sm:text-[0.9375rem] leading-snug line-clamp-2 transition-colors duration-200 group-hover:text-[#c9922c] flex-1"
             style={{
-              color: '#c9922c',
+              color: '#2c1810',
               fontFamily: "'DM Sans', sans-serif",
             }}
           >
-            ₹{product.price.toLocaleString('en-IN')}
-          </p>
+            {displayName}
+          </h3>
 
           {/* Arrow indicator */}
           <div
-            className="w-7 h-7 rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all duration-300 -translate-x-2 group-hover:translate-x-0"
+            className="w-7 h-7 flex-shrink-0 rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all duration-300 -translate-x-2 group-hover:translate-x-0"
             style={{ background: 'linear-gradient(135deg, #fce4ec, #fff3e0)', color: '#c9922c' }}
           >
             <svg width="12" height="12" viewBox="0 0 12 12" fill="none">
