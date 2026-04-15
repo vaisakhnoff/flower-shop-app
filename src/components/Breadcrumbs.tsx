@@ -2,7 +2,7 @@ import { Link } from 'react-router-dom';
 
 export interface BreadcrumbItem {
   label: string;
-  to?: string; // FIX: Added '?' to make it optional
+  to?: string;
 }
 
 interface BreadcrumbsProps {
@@ -11,25 +11,34 @@ interface BreadcrumbsProps {
 
 export default function Breadcrumbs({ items }: BreadcrumbsProps) {
   return (
-    <nav className="flex text-sm text-gray-500 mb-6" aria-label="Breadcrumb">
-      <ol className="inline-flex items-center space-x-1 md:space-x-3">
+    <nav aria-label="Breadcrumb">
+      <ol className="inline-flex items-center flex-wrap gap-1">
         {items.map((item, index) => {
           const isLast = index === items.length - 1;
-
           return (
-            <li key={index} className="inline-flex items-center">
+            <li key={index} className="inline-flex items-center gap-1">
               {index > 0 && (
-                <svg className="w-3 h-3 text-gray-400 mx-1" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 6 10">
-                  <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="m1 9 4-4-4-4"/>
+                <svg
+                  width="5" height="9" viewBox="0 0 5 9" fill="none"
+                  aria-hidden="true"
+                  style={{ color: 'rgba(176,153,122,0.5)' }}
+                >
+                  <path d="M1 1l3 3.5L1 8" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
                 </svg>
               )}
-              
               {item.to && !isLast ? (
-                <Link to={item.to} className="inline-flex items-center text-gray-700 hover:text-teal-600 transition-colors">
+                <Link
+                  to={item.to}
+                  className="text-xs sm:text-sm transition-colors duration-200 hover:text-[#c9922c] truncate max-w-[120px] sm:max-w-none"
+                  style={{ color: '#8b7060' }}
+                >
                   {item.label}
                 </Link>
               ) : (
-                <span className={`ml-1 md:ml-2 ${isLast ? 'text-gray-500 font-medium' : 'text-gray-700'}`}>
+                <span
+                  className="text-xs sm:text-sm font-medium truncate max-w-[120px] sm:max-w-none"
+                  style={{ color: isLast ? '#2c1810' : '#8b7060' }}
+                >
                   {item.label}
                 </span>
               )}

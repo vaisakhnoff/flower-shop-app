@@ -8,53 +8,84 @@ export default function FavoritesPage() {
   const { t } = useLanguage();
 
   return (
-    <div className="min-h-screen bg-stone-50">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 py-8 md:py-12">
-        {/* Page Header */}
-        <div className="mb-10">
-          <h1 className="text-3xl md:text-4xl lg:text-5xl font-serif font-bold text-gray-900 tracking-tight mb-2">
-            {t.yourFavorites}
+    <div className="min-h-screen" style={{ background: '#fffdf9' }}>
+
+      {/* Page Banner */}
+      <div
+        className="relative px-4 sm:px-6 lg:px-8 pt-8 sm:pt-10 pb-10 sm:pb-12 overflow-hidden"
+        style={{ background: 'linear-gradient(160deg, #fff5f7 0%, #fffdf5 50%, #fef5e4 100%)' }}
+      >
+        <div className="absolute -top-8 -right-8 w-40 h-40 rounded-full opacity-40 pointer-events-none"
+          style={{ background: 'radial-gradient(circle, #ffc9d5, transparent)' }} />
+
+        <div className="relative max-w-7xl mx-auto">
+          <h1
+            className="font-display font-bold leading-tight mb-2"
+            style={{
+              fontFamily: "'Playfair Display', serif",
+              color: '#2c1810',
+              fontSize: 'clamp(1.8rem, 5vw, 3.5rem)',
+              letterSpacing: '-0.02em',
+            }}
+          >
+            {t.yourFavorites || 'Your Wishlist'}
           </h1>
-          <p className="text-base md:text-lg text-gray-600">
-            {favorites.length > 0 
-              ? `${favorites.length} ${favorites.length === 1 ? 'item' : 'items'} saved`
-              : t.noFavorites
-            }
-          </p>
+          <div className="flex items-center gap-3">
+            <div className="h-px w-8" style={{ background: 'linear-gradient(to right, #c9922c, transparent)' }} />
+            <p className="text-sm font-medium" style={{ color: '#8b7060' }}>
+              {favorites.length > 0
+                ? `${favorites.length} ${favorites.length === 1 ? 'arrangement' : 'arrangements'} saved`
+                : t.noFavorites || 'Your wishlist is empty'}
+            </p>
+          </div>
         </div>
-        
+      </div>
+
+      {/* Content */}
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-10">
         {favorites.length > 0 ? (
-          /* Product Grid - Same as Shop Page */
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 md:gap-8">
-            {favorites.map(product => (
-              <ProductCard key={product.id} product={product} />
+          <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-4 md:gap-5 lg:gap-6">
+            {favorites.map((product, i) => (
+              <div
+                key={product.id}
+                className="animate-fade-up"
+                style={{ animationDelay: `${i * 0.07}s`, animationFillMode: 'both' }}
+              >
+                <ProductCard product={product} />
+              </div>
             ))}
           </div>
         ) : (
-          /* Empty State */
-          <div className="flex flex-col items-center justify-center py-16 md:py-24">
-            <div className="bg-white rounded-2xl shadow-lg p-8 md:p-12 max-w-md w-full text-center">
-              {/* Empty Icon */}
-              <div className="mb-6">
-                <div className="inline-flex items-center justify-center w-20 h-20 md:w-24 md:h-24 bg-stone-100 rounded-full text-4xl md:text-5xl">
-                  💔
-                </div>
+          <div className="flex flex-col items-center justify-center py-20 animate-fade-in">
+            {/* Empty state card */}
+            <div
+              className="max-w-sm w-full text-center p-8 sm:p-10 rounded-3xl"
+              style={{
+                background: '#fff',
+                boxShadow: 'var(--shadow-card)',
+                border: '1px solid rgba(243,232,224,0.8)',
+              }}
+            >
+              <div
+                className="w-20 h-20 rounded-full mx-auto mb-5 flex items-center justify-center text-3xl animate-float"
+                style={{ background: 'linear-gradient(135deg, #fce4ec, #fff3e0)' }}
+              >
+                🌸
               </div>
-              
-              {/* Empty Message */}
-              <h2 className="text-xl md:text-2xl font-serif font-bold text-gray-900 mb-3">
+              <h2
+                className="font-display font-bold text-xl mb-3"
+                style={{ fontFamily: "'Playfair Display', serif", color: '#2c1810' }}
+              >
                 No Favorites Yet
               </h2>
-              <p className="text-sm md:text-base text-gray-600 mb-8 leading-relaxed">
-                Start adding your favorite flowers to your wishlist and they'll appear here
+              <p className="text-sm leading-relaxed mb-8" style={{ color: '#8b7060' }}>
+                Browse our collections and heart the arrangements that speak to you — they'll appear here.
               </p>
-              
-              {/* CTA Button */}
               <Link
                 to="/shop"
-                className="inline-block w-full bg-gray-900 hover:bg-gray-800 text-white font-semibold text-base py-3.5 px-6 rounded-xl transition-all duration-300 shadow-md hover:shadow-xl active:scale-[0.98]"
+                className="btn-luxury btn-luxury-primary block w-full"
               >
-                Start Shopping
+                Explore Collection
               </Link>
             </div>
           </div>
