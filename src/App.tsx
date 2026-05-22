@@ -1,4 +1,5 @@
-import { Routes, Route } from 'react-router-dom';
+import { Routes, Route, useLocation } from 'react-router-dom';
+import { useLayoutEffect } from 'react';
 import Header from './components/Header';
 import HomePage from './pages/HomePage';
 import ShopPage from './pages/ShopPage';
@@ -11,9 +12,21 @@ import ProtectedRoute from './components/ProtectedRoute.tsx';
 import WhatsAppFAB from './components/WhatsAppFAB.tsx';
 import Footer from './components/Footer.tsx';
 
+function ScrollToTop() {
+  const { pathname } = useLocation();
+  useLayoutEffect(() => {
+    // Synchronous scroll reset before browser paint — works reliably on mobile
+    window.scrollTo(0, 0);
+    document.documentElement.scrollTop = 0;
+    document.body.scrollTop = 0; // Safari fallback
+  }, [pathname]);
+  return null;
+}
+
 export default function App() {
   return (
     <div className="min-h-screen flex flex-col" style={{ background: '#fffdf9' }}>
+      <ScrollToTop />
       <Header />
       <main className="flex-1">
         <Routes>
