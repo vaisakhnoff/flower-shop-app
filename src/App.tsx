@@ -9,7 +9,7 @@ import ContactPage from './pages/ContactPage';
 import AdminPanelPage from './pages/AdminPanelPage.tsx';
 import LoginPage from './pages/LoginPage.tsx';
 import ProtectedRoute from './components/ProtectedRoute.tsx';
-import WhatsAppFAB from './components/WhatsAppFAB.tsx';
+
 import Footer from './components/Footer.tsx';
 
 function ScrollToTop() {
@@ -44,7 +44,6 @@ export default function App() {
         </Routes>
       </main>
       <Footer />
-      <WhatsAppFAB />
     </div>
   );
 }

@@ -233,58 +233,6 @@ body {
   100% { background-position: -200% center; }
 }
 
-/* ============================
-   WHATSAPP FAB BUTTON
-   ============================ */
-.whatsapp-fab {
-  position: fixed;
-  bottom: 24px;
-  right: 24px;
-  z-index: 999;
-  border-radius: 50px;
-  background: linear-gradient(135deg, #25D366 0%, #1fbe5a 100%);
-  color: white;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  box-shadow: 0 4px 20px rgba(37, 211, 102, 0.45), 0 2px 8px rgba(0,0,0,0.12);
-  transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
-  cursor: pointer;
-  border: none;
-  text-decoration: none;
-  overflow: hidden;
-  height: 56px;
-  padding: 0 20px;
-  gap: 8px;
-  font-weight: 700;
-  font-size: 0.8rem;
-  letter-spacing: 0.04em;
-  white-space: nowrap;
-}
-
-.whatsapp-fab:hover {
-  background: linear-gradient(135deg, #20BA5A 0%, #18a34a 100%);
-  transform: scale(1.05) translateY(-2px);
-  box-shadow: 0 8px 32px rgba(37, 211, 102, 0.55);
-}
-
-.whatsapp-fab-icon-only {
-  width: 56px;
-  padding: 0;
-}
-
-@media (max-width: 768px) {
-  .whatsapp-fab {
-    bottom: 20px;
-    right: 16px;
-    width: 52px;
-    height: 52px;
-    padding: 0;
-    border-radius: 50%;
-    font-size: 0;
-    gap: 0;
-  }
-}
 
 /* ============================
    SECTION DIVIDER
@@ -577,21 +525,6 @@ body {
   animation: slideInRight 0.5s cubic-bezier(0.4, 0, 0.2, 1) both;
 }
 
-/* ============================
-   WHATSAPP BUTTON PULSE RING
-   ============================ */
-@keyframes pulseRing {
-  0% { transform: scale(1); opacity: 0.6; }
-  100% { transform: scale(1.6); opacity: 0; }
-}
-
-.pulse-ring {
-  position: absolute;
-  inset: 0;
-  border-radius: 50%;
-  background: rgba(37, 211, 102, 0.3);
-  animation: pulseRing 2s ease-out infinite;
-}
 
 /* ============================
    RESPONSIVE HELPERS

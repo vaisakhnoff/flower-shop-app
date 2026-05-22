@@ -313,13 +313,6 @@ function RelatedProductStrip({ categorySlug, currentId }: { categorySlug: string
               e.preventDefault(); e.stopPropagation();
               liked ? removeFavorite(p.id) : addFavorite(p);
             };
-            const handleWA = (e: React.MouseEvent) => {
-              e.preventDefault(); e.stopPropagation();
-              if (!WHATSAPP_NUMBER) return;
-              const url = `${window.location.origin}/product/${p.id}`;
-              const msg = encodeURIComponent(`Hi! I'm interested in:\n\n*${name}*\n\n${url}\n\nCould you share price and availability?`);
-              window.open(`https://wa.me/${WHATSAPP_NUMBER}?text=${msg}`, '_blank', 'noopener,noreferrer');
-            };
             return (
               <Link
                 key={p.id}
@@ -343,19 +336,7 @@ function RelatedProductStrip({ categorySlug, currentId }: { categorySlug: string
                   ) : (
                     <div className="w-full h-full flex items-center justify-center text-3xl">🌸</div>
                   )}
-                  {/* hover overlay */}
-                  <div
-                    className="absolute inset-x-0 bottom-0 translate-y-full group-hover:translate-y-0 transition-transform duration-300 pb-2 px-2"
-                    style={{ background: 'linear-gradient(to top, rgba(44,24,16,0.85), transparent)', paddingTop: 24 }}
-                  >
-                    <button
-                      onClick={handleWA}
-                      className="w-full flex items-center justify-center gap-1 py-1.5 rounded-xl text-[11px] font-bold text-white"
-                      style={{ background: 'rgba(37,211,102,0.92)' }}
-                    >
-                      <WhatsAppIcon size={12} /> Ask
-                    </button>
-                  </div>
+
                   {/* fav */}
                   <button
                     onClick={handleFav}
@@ -377,125 +358,6 @@ function RelatedProductStrip({ categorySlug, currentId }: { categorySlug: string
   );
 }
 
-// ─── Quick inquiry panel ──────────────────────────────────────────────────────
-function QuickInquiryPanel({ productName, options, onClose }: {
-  productName: string;
-  options: Record<string, string>;
-  onClose: () => void;
-}) {
-  const [inquiry, setInquiry] = useState('price');
-  const [note, setNote] = useState('');
-
-  const INQUIRY_TYPES = [
-    { key: 'price', label: 'Price', icon: '💰' },
-    { key: 'availability', label: 'Availability', icon: '📅' },
-    { key: 'custom', label: 'Customisation', icon: '✂️' },
-    { key: 'general', label: 'General Query', icon: '💬' },
-  ];
-
-  const inquiryLabels: Record<string, string> = {
-    price: 'asking for the price',
-    availability: 'checking availability for my event',
-    custom: 'requesting a custom design',
-    general: 'with a general question',
-  };
-
-  const handleSend = () => {
-    if (!WHATSAPP_NUMBER) return;
-    const url = window.location.href;
-    const optionLines = Object.entries(options).map(([k, v]) => `• ${k}: *${v}*`).join('\n');
-    const noteText = note.trim() ? `\n\nNote: ${note}` : '';
-    const msg = encodeURIComponent(
-      `Hi! I'm ${inquiryLabels[inquiry] || 'inquiring'} about:\n\n*${productName}*\n${optionLines ? '\nSelected options:\n' + optionLines : ''}\n\nProduct: ${url}${noteText}\n\nCould you please assist me?`
-    );
-    window.open(`https://wa.me/${WHATSAPP_NUMBER}?text=${msg}`, '_blank', 'noopener,noreferrer');
-    onClose();
-  };
-
-  return (
-    <div
-      className="fixed inset-0 z-[100] flex items-end sm:items-center justify-center p-0 sm:p-4"
-      style={{ background: 'rgba(44,24,16,0.6)', backdropFilter: 'blur(8px)' }}
-      onClick={onClose}
-    >
-      <div
-        className="w-full sm:max-w-md rounded-t-3xl sm:rounded-3xl overflow-hidden animate-fade-up"
-        style={{ background: '#fff', boxShadow: '0 -8px 40px rgba(0,0,0,0.15)' }}
-        onClick={e => e.stopPropagation()}
-      >
-        {/* Handle + header */}
-        <div className="flex items-center justify-between px-5 pt-4 pb-3" style={{ borderBottom: '1px solid rgba(243,232,224,0.8)' }}>
-          <div className="sm:hidden w-10 h-1 rounded-full bg-[#e8d5b7] mx-auto absolute left-1/2 -translate-x-1/2 top-2" />
-          <div>
-            <p className="text-xs font-bold uppercase tracking-wider" style={{ color: '#c9922c' }}>Quick Inquiry</p>
-            <p className="font-semibold text-base mt-0.5 line-clamp-1" style={{ color: '#2c1810', fontFamily: "'Playfair Display', serif" }}>{productName}</p>
-          </div>
-          <button
-            onClick={onClose}
-            className="w-8 h-8 rounded-full flex items-center justify-center transition-all hover:bg-[#fef3e2]"
-            style={{ color: '#8b7060' }}
-          >
-            <CloseIcon />
-          </button>
-        </div>
-
-        <div className="px-5 pt-4 pb-5">
-          {/* Inquiry type */}
-          <p className="text-xs font-bold uppercase tracking-[0.15em] mb-2.5" style={{ color: '#8b7060' }}>What do you want to know?</p>
-          <div className="grid grid-cols-2 gap-2 mb-4">
-            {INQUIRY_TYPES.map(type => (
-              <button
-                key={type.key}
-                onClick={() => setInquiry(type.key)}
-                className="flex items-center gap-2.5 px-3.5 py-3 rounded-2xl text-sm font-semibold transition-all duration-200 text-left"
-                style={{
-                  background: inquiry === type.key ? 'rgba(201,146,44,0.1)' : 'rgba(243,232,224,0.3)',
-                  border: `1.5px solid ${inquiry === type.key ? '#c9922c' : 'rgba(243,232,224,0.8)'}`,
-                  color: inquiry === type.key ? '#9a6f1e' : '#6b5444',
-                }}
-              >
-                <span className="text-base">{type.icon}</span>
-                <span>{type.label}</span>
-              </button>
-            ))}
-          </div>
-
-          {/* Optional note */}
-          <p className="text-xs font-bold uppercase tracking-[0.15em] mb-2" style={{ color: '#8b7060' }}>Add a note (optional)</p>
-          <textarea
-            value={note}
-            onChange={e => setNote(e.target.value)}
-            placeholder="e.g. For a wedding on 15th May, approx 200 guests…"
-            rows={2}
-            className="w-full resize-none text-sm rounded-2xl px-4 py-3 outline-none transition-all duration-200"
-            style={{
-              border: '1.5px solid rgba(243,232,224,1)',
-              background: '#fffdf9',
-              color: '#2c1810',
-              fontFamily: 'inherit',
-            }}
-            onFocus={e => { e.currentTarget.style.borderColor = '#c9922c'; e.currentTarget.style.boxShadow = '0 0 0 3px rgba(201,146,44,0.1)'; }}
-            onBlur={e => { e.currentTarget.style.borderColor = 'rgba(243,232,224,1)'; e.currentTarget.style.boxShadow = 'none'; }}
-          />
-
-          {/* Send button */}
-          <button
-            onClick={handleSend}
-            className="w-full mt-4 flex items-center justify-center gap-3 py-4 rounded-2xl font-bold text-white text-[1rem] transition-all duration-300 active:scale-[0.98]"
-            style={{ background: 'linear-gradient(135deg, #25D366, #1fbe5a)', boxShadow: '0 6px 24px rgba(37,211,102,0.3)' }}
-          >
-            <WhatsAppIcon size={20} />
-            Send Inquiry on WhatsApp
-          </button>
-          <p className="text-center text-[11px] mt-2.5" style={{ color: '#b0997a' }}>
-            🔒 No payment • Enquire freely • Response within 2 hours
-          </p>
-        </div>
-      </div>
-    </div>
-  );
-}
-
 // ─── Main Page ────────────────────────────────────────────────────────────────
 export default function ProductDetailPage() {
   const { id } = useParams<{ id: string }>();
@@ -505,7 +367,6 @@ export default function ProductDetailPage() {
 
   const [selectedOptions, setSelectedOptions] = useState<Record<string, string>>({});
   const [shareToast, setShareToast] = useState(false);
-  const [inquiryOpen, setInquiryOpen] = useState(false);
   const ctaRef = useRef<HTMLDivElement>(null);
   const [stickyVisible, setStickyVisible] = useState(false);
 
@@ -575,9 +436,18 @@ export default function ProductDetailPage() {
   ].filter(Boolean);
 
   const buildWAMessage = () => {
-    const url = window.location.href;
+    const pageUrl = window.location.href;
+    const imageUrl = product.images?.[0] ?? '';
     const optLines = Object.entries(selectedOptions).map(([k, v]) => `• ${k}: *${v}*`).join('\n');
-    return `Hi! I'm interested in:\n\n*${displayName}*\n${optLines ? '\nCustomization:\n' + optLines : ''}\n\nProduct: ${url}\n\nCould you please share more details, pricing, and availability?`;
+    return (
+      `Hi! I'm interested in this flower arrangement:\n\n` +
+      `*${displayName}*\n` +
+      `Category: ${formatSlug(product.categorySlug)}\n` +
+      (optLines ? `\nCustomization:\n${optLines}\n` : '') +
+      (imageUrl ? `\nProduct image: ${imageUrl}\n` : '') +
+      `Product page: ${pageUrl}\n\n` +
+      `Could you please share the price and availability?`
+    );
   };
 
   const handleWhatsApp = () => {
@@ -821,7 +691,7 @@ export default function ProductDetailPage() {
 
             {/* ── CTA Block ── */}
             <div ref={ctaRef} className="flex flex-col gap-2.5">
-              {/* WhatsApp primary */}
+              {/* Single WhatsApp inquiry button */}
               <button
                 onClick={handleWhatsApp}
                 className="w-full flex items-center justify-center gap-3 py-4 px-6 rounded-2xl font-bold text-white text-[1rem] transition-all duration-300 active:scale-[0.98]"
@@ -831,15 +701,6 @@ export default function ProductDetailPage() {
               >
                 <WhatsAppIcon size={22} />
                 Enquire Now on WhatsApp
-              </button>
-
-              {/* Quick inquiry panel trigger */}
-              <button
-                onClick={() => setInquiryOpen(true)}
-                className="w-full flex items-center justify-center gap-2 py-3 px-6 rounded-2xl font-semibold text-sm transition-all duration-200 hover:scale-[1.01] active:scale-[0.98]"
-                style={{ background: 'rgba(201,146,44,0.07)', border: '1.5px solid rgba(201,146,44,0.3)', color: '#9a6f1e' }}
-              >
-                💬 Ask price / availability / custom options
               </button>
 
               {/* Save to wishlist */}
@@ -891,15 +752,7 @@ export default function ProductDetailPage() {
             className="flex-1 flex items-center justify-center gap-2 py-3.5 rounded-xl font-bold text-sm text-white transition-all duration-200 active:scale-[0.97]"
             style={{ background: 'linear-gradient(135deg, #25D366, #1fbe5a)', boxShadow: '0 4px 16px rgba(37,211,102,0.3)' }}
           >
-            <WhatsAppIcon size={18} /> Enquire
-          </button>
-          {/* Quick inquiry */}
-          <button
-            onClick={() => setInquiryOpen(true)}
-            className="flex items-center justify-center px-3 py-3.5 rounded-xl font-semibold text-sm transition-all duration-200 active:scale-95"
-            style={{ background: 'rgba(201,146,44,0.1)', border: '1.5px solid rgba(201,146,44,0.3)', color: '#9a6f1e' }}
-          >
-            💬
+            <WhatsAppIcon size={18} /> Enquire on WhatsApp
           </button>
           {/* Fav */}
           <button
@@ -915,15 +768,6 @@ export default function ProductDetailPage() {
           </button>
         </div>
       </div>
-
-      {/* Quick Inquiry Panel */}
-      {inquiryOpen && (
-        <QuickInquiryPanel
-          productName={displayName}
-          options={selectedOptions}
-          onClose={() => setInquiryOpen(false)}
-        />
-      )}
 
     </div>
   );

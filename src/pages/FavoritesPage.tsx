@@ -97,7 +97,7 @@ export default function FavoritesPage() {
                   Ready to inquire?
                 </p>
                 <p className="text-xs mt-0.5" style={{ color: '#3a8a50' }}>
-                  Use the "Ask on WhatsApp" button on any product, or tap "Ask About All Items" above to send your entire wishlist in one message.
+                  Tap any product to view details and enquire, or use "Ask About All Items" above to send your entire wishlist in one WhatsApp message.
                 </p>
               </div>
             </div>
